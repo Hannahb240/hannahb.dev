@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BlogService } from '../blog.service';
-import { Blog } from '../blog.model';
+import { Post } from '../post.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-blog-list',
@@ -8,28 +9,29 @@ import { Blog } from '../blog.model';
   styleUrls: ['./blog-list.component.css'],
   providers: []
 })
-export class BlogListComponent implements OnInit {
+export class BlogListComponent implements OnInit, OnDestroy {
 
-  hannah = false;
-  blogs: Blog[] = [ 
-    // new Blog('hannah', 'testContent'),
-    // new Blog('Iwan', "testContent2")
-  ];
+  blogs: Post[] = [];
+  private blogArraySubscribe: Subscription;
 
   constructor(private blogService: BlogService) { 
-
   }
 
   ngOnInit(): void {
-    this.blogs= this.blogService.getArray();
+  
+    this.blogService.fetchPosts().subscribe(posts => {
+      this.blogService.blogArray = posts;
+      this.blogs= this.blogService.blogArray;
+    });  
 
-    this.blogService.newBlogAddedEmitter.subscribe(() => {
-      this.blogs= this.blogService.getArray();    
+    this.blogArraySubscribe = this.blogService.newBlogAddedEmitter.subscribe(() => {
+      this.blogService.fetchPosts().subscribe(posts => {
+        this.blogService.blogArray = posts;
+        this.blogs= this.blogService.blogArray;
+      });  
     });
   }
-
-  onUpdateBlogArray() {
-    this.blogs= this.blogService.getArray();
+  ngOnDestroy() {
+    this.blogArraySubscribe.unsubscribe();
   }
-
 }

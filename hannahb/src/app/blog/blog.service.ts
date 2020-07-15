@@ -1,18 +1,39 @@
-import { EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Post } from './post.model';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+
+@Injectable({providedIn: 'root'})
 
 export class BlogService {
 
-    newBlogAddedEmitter = new EventEmitter();
+    constructor(private http: HttpClient) {}
 
-    blogArray = [{name: "hannah", content: "This is a blog post"},
-                 {name: "iwan", content: "Blog post number 22222"}];
+    blogArray: Post[]  = [];
+    newBlogAddedEmitter = new Subject();
 
-    addToBlog(nameOfBlog: string, contentOfBlog: string) {
-        this.blogArray.push({name: nameOfBlog, content: contentOfBlog});
-        console.log(this.blogArray);
+    createAndStorePost(title: string, content: string) {
+
+        const blogData: Post = {name: title, content: content};      
+        this.http.post<{name: string}>(
+            'https://hannahb-25372.firebaseio.com/posts.json', blogData)
+            .subscribe( responseData => {
+              console.log(responseData);
+            }
+        ) 
     }
 
-    getArray() {
-        return this.blogArray.slice()
-    }
+    fetchPosts() {
+        return this.http.get<{[key: string]: Post }>('https://hannahb-25372.firebaseio.com/posts.json').
+              pipe(map(responseData => {
+                const postsArray: Post[] = [];
+                for( const key in responseData) {
+                  if(responseData.hasOwnProperty(key)) {
+                    postsArray.push({...responseData[key], id: key });
+                  }                
+                }
+                return postsArray;
+              }))
+      }
 }
