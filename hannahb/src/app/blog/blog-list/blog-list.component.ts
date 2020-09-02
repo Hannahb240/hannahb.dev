@@ -19,18 +19,26 @@ export class BlogListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
   
-    this.blogService.fetchPosts().subscribe(posts => {
-      this.blogService.blogArray = posts;
-      this.blogs= this.blogService.blogArray;
-    });  
-
-    this.blogArraySubscribe = this.blogService.newBlogAddedEmitter.subscribe(() => {
-      this.blogService.fetchPosts().subscribe(posts => {
-        this.blogService.blogArray = posts;
-        this.blogs= this.blogService.blogArray;
+    this.blogArraySubscribe = 
+      this.blogService.refreshBlogListEmitter.subscribe(() => {
+            this.blogService.fetchPosts().subscribe(posts => {
+              this.blogService.blogArray = posts;
+              this.blogs= this.blogService.blogArray;
       });  
     });
+    this.blogService.refreshBlogListEmitter.next();
   }
+
+  onDelete(id:string) {
+    this.blogService.deleteBlogPost(id).subscribe(() => {
+      this.blogService.refreshBlogListEmitter.next();  
+    }); 
+  }
+
+  onViewClick(id: string){ 
+    this.blogService.displayBlogEmitter.next(id);
+  }
+  
   ngOnDestroy() {
     this.blogArraySubscribe.unsubscribe();
   }

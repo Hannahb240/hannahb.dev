@@ -1,0 +1,60 @@
+<div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+        <div>
+            <button class="btn btn-primary" 
+                (click)="createAccount()"> 
+                Create account 
+            </button> | 
+
+            <button class="btn btn-primary"
+                (click)="login()">
+                Login
+            </button>
+
+            <button class="btn btn-primary" 
+                (click)="makeAdmin()"> 
+                Make Admin 
+            </button>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+        <form [formGroup]="loginSignUpForm" 
+              (ngSubmit)="onSubmit(loginSignUpForm.value)">
+            <div *ngIf="selectionMade">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input 
+                        type="text" 
+                        id="email" 
+                        formControlName="email"
+                        class="form-control"
+                        required
+                        email
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        formControlName="password"
+                        class="form-control"
+                        required
+                        password
+                    >
+                </div>
+                <div class="form-group" *ngIf="!isLoginMode">
+                    <label for="Name">Full name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        formControlName="name"
+                        class="form-control"
+                    >
+                </div>
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>

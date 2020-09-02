@@ -1,17 +1,13 @@
-<p>blog-list works!</p>
 <div class="row">
     <div class="col-xs-12">
-        <button class="btn btn-success">New Blog</button>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-12">
-        <a href="#" 
+        <a 
            class="list-group-item clearfix" 
            *ngFor="let blog of blogs">
             <div class="pull-left">
                 <h4 class="list-group-item-heading">{{ blog.name }}</h4>
                 <p class="list-group-item-text">{{ blog.content }}</p>
+                <button (click)="onDelete(blog.id)">Del</button>
+                <button (click)="onViewClick(blog.id)">View</button>
             </div>
         </a>
     </div>

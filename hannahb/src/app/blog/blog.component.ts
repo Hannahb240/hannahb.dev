@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-blog',
@@ -12,8 +12,6 @@ export class BlogComponent implements OnInit {
   ngOnInit(): void {
     
   }
-  onUpdateBlogArray() {
+
   
-  
-  }
 }
